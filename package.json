@@ -1,0 +1,19 @@
+{
+  "name": "Testes",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node-dev ./src/start.ts"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/node": "^16.10.3",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "axios": "^0.22.0",
+    "fs": "^0.0.1-security"
+  }
+}
