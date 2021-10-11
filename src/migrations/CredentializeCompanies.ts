@@ -1,41 +1,33 @@
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import fs from 'fs';
 
 import { companys } from '../json/listCompanysdata';
 import { ICredentializeCompanies } from './interfaces/ICredentializeCompanies';
 
-function CredentializeCompanies(): void {
-    let CompanysCredentials: ICredentializeCompanies[]
-
-    const axisoinstance = axios.create({
-        baseURL: 'http://localhost:80/api/v1'
-    })
+async function CredentializeCompanies(): Promise<void> {
     try {
+        let CompanysData: ICredentializeCompanies[];
+
+        const axisoinstance = axios.create({ baseURL: process.env.API_URL })
+
         companys.map(async (company) => {
-            try {
-                const response = await axisoinstance.post('/companys',
-                    {
-                        name: `Empresa de testes ${company.merchant}`,
-                        fantasyName: "Empresa de testes",
-                        email: `empresadetestes${company.id}@gmail.com`,
-                        document: company.merchant
-                    });
+            await axisoinstance.post(
+                '/companys',
+                {
+                    name: `Empresa de testes ${company.merchant}`,
+                    fantasyName: `Usuario -${company.id}`,
+                    email: `empresadetestes${company.id}@gmail.com`,
+                    document: company.merchant
+                }
+            ).then((response: any) => {
+                const data = response.data as ICredentializeCompanies
 
-                setTimeout(() => { }, 2000)
-
-                const result: ICredentializeCompanies = response.data as any;
-
-                console.log(result.company)
-            } catch (err: any) {
-                console.log(err.message)
-            }
+                fs.appendFileSync('./src/migrations/data/companyCredentials.json', JSON.stringify(data))
+            }).catch((err: AxiosError) => {
+                console.log(JSON.stringify(err.response?.data));
+                console.log(`Empresa CNPJ: ${company.merchant}`);
+            })
         });
-
-        
-        // const stream = fs.createWriteStream('./src/migrations/data/companyCredentials.json');
-        // stream.once('open', () => {
-        //     stream.write(CompanysCredentials);
-        // })
     } catch (err: any) {
         console.log(err.message)
     }

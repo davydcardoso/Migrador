@@ -1,7 +1,9 @@
+require('dotenv').config();
+
 import { CredentializeCompanies } from "./migrations/CredentializeCompanies";
 
 function start() {
-    CredentializeCompanies();
+    new Promise(async () => { await CredentializeCompanies() });
 }
 
 start();
